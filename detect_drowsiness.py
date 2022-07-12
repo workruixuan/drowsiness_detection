@@ -88,8 +88,8 @@ detector = cv2.CascadeClassifier(conf["cascade_path"])
 predictor = dlib.shape_predictor(conf["shape_predictor_path"])
 
 # Call the googlesheets functions once
-gg = Googlesheets("Rui Xuan")
-gg.createIfNotFound(gg.name, gg.record_row)
+# gg = Googlesheets("Rui Xuan")
+# gg.createIfNotFound(gg.name, gg.record_row)
 
 # grab the indexes of the facial landmarks for the left, right eye,
 # and inner part of the mouth respectively
