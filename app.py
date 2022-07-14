@@ -1,23 +1,36 @@
-from flask import Flask, render_template, Response
-from camera import Video
+from flask import Flask,render_template,redirect,url_for,session
+from flask_wtf import FlaskForm
+from wtforms import StringField,SubmitField,RadioField,TextAreaField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import InputRequired
 
 app=Flask(__name__)
+app.config['SECRET_KEY']='some_random_secret'
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+class SignUpForm(FlaskForm):
+    name=StringField('Enter your Name',validators=[InputRequired()])
+    email=EmailField('Enter your email',validators=[InputRequired()])
+    publicity=RadioField('How did you hear about us ?',choices=[('social','Social Media'),('poster','Posters and flyers')])
+    feedback=TextAreaField('Anything else you want to tell us ?')
+    submit=SubmitField('Submit')
 
-def gen(camera):
-    while True:
-        frame=camera.get_frame()
-        yield(b'--frame\r\n'
-       b'Content-Type:  image/jpeg\r\n\r\n' + frame +
-         b'\r\n\r\n')
+@app.route('/',methods=['GET','POST'])
+def hello_world():
 
-@app.route('/video')
+    form = SignUpForm()
+    if form.validate_on_submit():
+        session['name'] = form.name.data
+        session['email'] = form.email.data
+        session['publicity'] = form.publicity.data
+        session['feedback'] = form.feedback.data
 
-def video():
-    return Response(gen(Video()),
-    mimetype='multipart/x-mixed-replace; boundary=frame')
+        return redirect(url_for("thankyou"))
+    return render_template('index.html',form=form)
 
-app.run(host='0.0.0.0', port=81)
+@app.route('/thankyou')
+def thankyou():
+ 
+    return render_template('thankyou.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
