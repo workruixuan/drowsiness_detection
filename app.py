@@ -20,4 +20,4 @@ def video():
     return Response(gen(Video()),
     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-app.run(debug=True, host='0.0.0.0', port=81)
+app.run(host='0.0.0.0', port=81)
