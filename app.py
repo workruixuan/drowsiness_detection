@@ -1,36 +1,40 @@
-from flask import Flask,render_template,redirect,url_for,session
-from flask_wtf import FlaskForm
-from wtforms import StringField,SubmitField,RadioField,TextAreaField
-from wtforms.fields.html5 import EmailField
-from wtforms.validators import InputRequired
+from flask import Flask, redirect, url_for, render_template, Response, request
+from camera import Video
+app = Flask(__name__)
 
-app=Flask(__name__)
-app.config['SECRET_KEY']='some_random_secret'
 
-class SignUpForm(FlaskForm):
-    name=StringField('Enter your Name',validators=[InputRequired()])
-    email=EmailField('Enter your email',validators=[InputRequired()])
-    publicity=RadioField('How did you hear about us ?',choices=[('social','Social Media'),('poster','Posters and flyers')])
-    feedback=TextAreaField('Anything else you want to tell us ?')
-    submit=SubmitField('Submit')
+@app.route('/')
+def index():
+   return render_template('index.html')
 
-@app.route('/',methods=['GET','POST'])
-def hello_world():
+def gen(camera):
+    while True:
+        frame=camera.get_frame()
+        yield(b'--frame\r\n'
+       b'Content-Type:  image/jpeg\r\n\r\n' + frame +
+         b'\r\n\r\n')
 
-    form = SignUpForm()
-    if form.validate_on_submit():
-        session['name'] = form.name.data
-        session['email'] = form.email.data
-        session['publicity'] = form.publicity.data
-        session['feedback'] = form.feedback.data
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(Video()),
+    mimetype='multipart/x-mixed-replace; boundary=frame')
 
-        return redirect(url_for("thankyou"))
-    return render_template('index.html',form=form)
+# @app.route('/success/<name>')
+# def success(name):
+#    return 'welcome1 %s' % name
 
-@app.route('/thankyou')
-def thankyou():
- 
-    return render_template('thankyou.html')
+# @app.route('/success2/<name>')
+# def success2(name):
+#    return 'welcome sot %s' % name
+
+# @app.route('/login',methods = ['POST', 'GET'])
+# def login():
+#    if request.method == 'POST':
+#       user = request.form['nm']
+#       return redirect(url_for('success',name = user))
+#    else:
+#       user = request.args.get('nm')
+#       return redirect(url_for('success2',name = user))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+   app.run(debug = True)
