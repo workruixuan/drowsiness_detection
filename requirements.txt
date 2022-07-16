@@ -12,7 +12,6 @@ PyMsgBox==1.0.9
 pyperclip==1.8.2
 PyRect==0.1.4
 PyScreeze==0.1.28
-pytesseract==0.3.8
 pytweening==1.0.4
 waitress==2.1.2
 Werkzeug==2.1.2
