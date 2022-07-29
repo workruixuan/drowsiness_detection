@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/4a1f173e-0d8e-4630-a165-2fe667b68322/microsoft.web/sites/subscriptions/4a1f173e-0d8e-4630-a165-2fe667b68322/resourceGroups/mesmessyvision_group/providers/Microsoft.Web/sites/mesmessyvision",
+    "appService.deploySubpath": "."
+}
